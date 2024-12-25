@@ -1,0 +1,1027 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+// Structure to represent a node in the BST 
+struct Node  
+{ 
+}; 
+int data; 
+struct Node* left; 
+struct Node* right; 
+// Function to initialize an empty BST 
+struct Node* initializeBST()  
+{ 
+return NULL; 
+} 
+// Function to insert a node into the BST 
+struct Node* insertNode(struct Node* root, int value)  
+{ 
+if (root == NULL)  
+{ 
+struct Node* newNode = (struct Node*)malloc(sizeof(struct Node)); 
+newNode->data = value; 
+newNode->left = newNode->right = NULL; 
+return newNode; 
+} 
+if (value < root->data)  
+{ 
+root->left = insertNode(root->left, value); 
+   }  
+    else if (value > root->data)  
+    { 
+        root->right = insertNode(root->right, value); 
+    } 
+ 
+    return root; 
+} 
+ 
+// Function to find the minimum value in the BST 
+int findMinimum(struct Node* root)  
+{ 
+    if (root == NULL)  
+    { 
+        printf("The BST is empty.\n"); 
+        return -1; 
+    } 
+ 
+    while (root->left != NULL)  
+    { 
+        root = root->left; 
+    } 
+ 
+    return root->data; 
+} 
+ 
+// Function to find the maximum value in the BST 
+int findMaximum(struct Node* root)  
+{ 
+    if (root == NULL)  
+    { 
+        printf("The BST is empty.\n"); 
+        return -1; 
+    } 
+ 
+    while (root->right != NULL)  
+    { 
+        root = root->right; 
+    } 
+ 
+    return root->data; 
+} 
+ 
+// Function to delete a node from the BST 
+struct Node* deleteNode(struct Node* root, int value)  
+{ 
+    if (root == NULL)  
+    { 
+        printf("Value %d not found in the BST.\n", value); 
+        return root; 
+  } 
+ 
+    if (value < root->data)  
+    { 
+        root->left = deleteNode(root->left, value); 
+    }  
+    else if (value > root->data)  
+    { 
+        root->right = deleteNode(root->right, value); 
+    }  
+    else  
+    { 
+        if (root->left == NULL)  
+        { 
+            struct Node* temp = root->right; 
+            free(root); 
+            return temp; 
+        }  
+        else if (root->right == NULL)  
+        { 
+            struct Node* temp = root->left; 
+            free(root); 
+            return temp; 
+        } 
+ 
+        struct Node* temp = root->right; 
+        while (temp->left != NULL)  
+        { 
+            temp = temp->left; 
+        } 
+ 
+        root->data = temp->data; 
+        root->right = deleteNode(root->right, temp->data); 
+    } 
+ 
+    return root; 
+} 
+ 
+// Function to display the BST in inorder traversal 
+void displayInorder(struct Node* root)  
+{ 
+    if (root == NULL)  
+    { 
+        return; 
+    } 
+ 
+    displayInorder(root->left); 
+    printf("%d ", root->data); 
+    displayInorder(root->right); 
+}
+int main()  
+{ 
+    struct Node* root = initializeBST(); 
+ 
+    while (1)  
+    { 
+        printf("\nBinary Search Tree Menu:\n"); 
+        printf("1. Insert a node\n"); 
+        printf("2. Delete a node\n"); 
+        printf("3. Find Minimum\n"); 
+        printf("4. Find Maximum\n"); 
+        printf("5. Display Inorder Traversal\n"); 
+        printf("6. Exit\n"); 
+ 
+        int choice, value; 
+ 
+        printf("Enter your choice: "); 
+        scanf("%d", &choice); 
+ 
+        switch (choice)  
+        { 
+            case 1: 
+                printf("Enter value to insert: "); 
+                scanf("%d", &value); 
+                root = insertNode(root, value); 
+                break; 
+ 
+            case 2: 
+                printf("Enter value to delete: "); 
+                scanf("%d", &value); 
+                root = deleteNode(root, value); 
+                break; 
+ 
+            case 3: 
+                printf("Minimum value: %d\n", findMinimum(root)); 
+                break; 
+ 
+            case 4: 
+                printf("Maximum value: %d\n", findMaximum(root)); 
+                break; 
+ 
+            case 5: 
+                printf("Inorder Traversal: "); 
+                displayInorder(root); 
+                printf("\n"); 
+                break; 
+ 
+            case 6: 
+                exit(0); 
+default: 
+printf("Invalid choice. Try again.\n"); 
+break; 
+} 
+} 
+return 0; 
+}
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h> 
+// Structure to represent an item in the shopping cart 
+struct CartItem  
+{ 
+}; 
+char name[100]; 
+float price; 
+int quantity; 
+struct CartItem* next; 
+struct CartItem* prev; 
+// Structure to represent the shopping cart 
+struct ShoppingCart  
+{ 
+struct CartItem* head; 
+struct CartItem* tail; 
+}; 
+// Function to initialize an empty shopping cart 
+void initializeCart(struct ShoppingCart* cart)  
+{ 
+cart->head = NULL; 
+cart->tail = NULL; 
+} 
+// Function to add items to the cart 
+void addItem(struct ShoppingCart* cart, const char* name, float price, int quantity)  
+{ 
+struct CartItem* newItem = (struct CartItem*)malloc(sizeof(struct CartItem)); 
+ strncpy(newItem->name, name, sizeof(newItem->name)); 
+    newItem->price = price; 
+    newItem->quantity = quantity; 
+    newItem->next = NULL; 
+    newItem->prev = cart->tail; 
+ 
+    if (cart->tail != NULL)  
+    { 
+        cart->tail->next = newItem; 
+    } 
+ 
+    cart->tail = newItem; 
+ 
+    if (cart->head == NULL)  
+    { 
+        cart->head = newItem; 
+    } 
+} 
+ 
+// Function to remove items from the cart by name 
+void removeItem(struct ShoppingCart* cart, const char* name)  
+{ 
+    struct CartItem* current = cart->head; 
+ 
+    while (current != NULL)  
+    { 
+        if (strcmp(current->name, name) == 0)  
+        { 
+            if (current->prev != NULL)  
+            { 
+                current->prev->next = current->next; 
+            }  
+            else  
+            { 
+                cart->head = current->next; 
+            } 
+ 
+            if (current->next != NULL)  
+            { 
+                current->next->prev = current->prev; 
+            }  
+            else  
+            { 
+                cart->tail = current->prev; 
+            } 
+ 
+            free(current); 
+            return; 
+        } 
+current = current->next; 
+} 
+printf("Item '%s' not found in the cart.\n", name); 
+} 
+// Function to display the cart in forward direction 
+void displayCartForward(struct ShoppingCart* cart)  
+{ 
+struct CartItem* current = cart->head; 
+printf("Shopping Cart:\n"); 
+while (current != NULL)  
+{ 
+printf("Name: %s, Price: $%.2f, Quantity: %d, Total Cost: $%.2f\n", current->name, 
+current->price, current->quantity, current->price * current->quantity); 
+current = current->next; 
+} 
+printf("\n"); 
+} 
+// Function to calculate and display the total cost of items in the cart 
+void displayTotalCost(struct ShoppingCart* cart)  
+{ 
+struct CartItem* current = cart->head; 
+float totalCost = 0.0; 
+while (current != NULL)  
+{ 
+totalCost += (current->price * current->quantity); 
+current = current->next; 
+} 
+printf("Total Cost of Items in the Cart: $%.2f\n", totalCost); 
+} 
+int main()  
+{ 
+struct ShoppingCart myCart; 
+initializeCart(&myCart); 
+// Add items to the cart 
+addItem(&myCart, "Product A", 10.99, 2); 
+addItem(&myCart, "Product B", 5.49, 3); 
+addItem(&myCart, "Product C", 2.99, 1); 
+// Display the cart 
+displayCartForward(&myCart); 
+// Remove an item from the cart 
+removeItem(&myCart, "Product B"); 
+// Display the updated cart 
+displayCartForward(&myCart); 
+// Calculate and display the total cost 
+displayTotalCost(&myCart); 
+return 0; 
+}
+#include <stdio.h> 
+int main()  
+{    
+    int n; 
+    printf("Enter the size of the array:"); 
+    scanf("%d",&n); 
+    int arr[n]; 
+     
+    printf("Enter the %d values to store it in array: \n", n); 
+    for(int i=0;i<n;i++) 
+    { 
+        scanf("%d",&arr[i]); 
+    } 
+    printf("The values stored in the array are: \n");     
+    for(int i=0;i<n;i++) 
+    { 
+        printf("%d \n",arr[i]); 
+    } 
+ 
+}
+#include <stdio.h> 
+#include <string.h> 
+#include <stdbool.h> 
+// Function to verify if a vehicle registration number is valid 
+bool verifyRegistration(char registration[])  
+{ 
+// Check if the registration number has exactly 10 characters 
+if (strlen(registration) != 10)  
+{ 
+return false; 
+} 
+// Check if the first two characters are alphabets (e.g., "KA" for Karnataka) 
+for (int i = 0; i < 2; i++)  
+{ 
+} 
+if (!isalpha(registration[i]))  
+{ 
+return false; 
+} 
+// Check if the next two characters are numbers (e.g., "09" for a specific district) 
+for (int i = 2; i < 4; i++)  
+{ 
+} 
+if (!isdigit(registration[i]))  
+{ 
+return false; 
+} 
+// Check if the next two characters are alphabets (e.g., "MN" for serial number) 
+for (int i = 4; i < 6; i++)
+    { 
+        if (!isalpha(registration[i]))  
+        { 
+            return false; 
+        } 
+    } 
+ 
+    // Check if the penultimate two characters are numbers (e.g., "3865" for vehicle number) 
+    for (int i = 6; i < 10; i++)  
+    { 
+        if (!isdigit(registration[i]))  
+        { 
+            return false; 
+        } 
+    } 
+ 
+    return true; 
+} 
+ 
+int main() { 
+    char registration[11];  
+    printf("Enter a vehicle registration number: "); 
+    scanf("%s", registration); 
+ 
+    if (verifyRegistration(registration))  
+    { 
+        printf("Accept: Vehicle registration number is valid.\n"); 
+    }  
+    else  
+    { 
+        printf("Reject: Vehicle registration number is invalid.\n"); 
+    } 
+ 
+    return 0; 
+}
+#include <stdio.h> 
+int main() { 
+int m, n, p, q; 
+printf("Enter the number of rows and columns of the first matrix: "); 
+scanf("%d %d", &m, &n); 
+printf("Enter the number of rows and columns of the second matrix: "); 
+scanf("%d %d", &p, &q); 
+if (n != p) { 
+printf("Matrix multiplication is not possible. Column of the first matrix must be equal to 
+the row of the second matrix.\n"); 
+return 1; 
+} 
+int firstMatrix[m][n], secondMatrix[p][q], resultMatrix[m][q]; 
+printf("Enter elements of the first matrix:\n"); 
+for (int i = 0; i < m; i++) { 
+for (int j = 0; j < n; j++) { 
+scanf("%d", &firstMatrix[i][j]); 
+} 
+} 
+printf("Enter elements of the second matrix:\n"); 
+for (int i = 0; i < p; i++) { 
+for (int j = 0; j < q; j++) { 
+scanf("%d", &secondMatrix[i][j]); 
+} 
+} 
+// Matrix multiplication 
+for (int i = 0; i < m; i++) { 
+for (int j = 0; j < q; j++) { 
+resultMatrix[i][j] = 0; 
+for (int k = 0; k < n; k++) { 
+resultMatrix[i][j] += firstMatrix[i][k] * secondMatrix[k][j]; 
+} 
+} 
+} 
+printf("Resultant matrix after multiplication:\n"); 
+for (int i = 0; i < m; i++) { 
+for (int j = 0; j < q; j++) { 
+printf("%d ", resultMatrix[i][j]); 
+} 
+printf("\n"); 
+} 
+return 0; 
+} 
+#include <stdio.h> 
+int isValidSudoku(int board[9][9]) { 
+// Check rows 
+for (int i = 0; i < 9; i++) { 
+int row[10] = {0}; 
+for (int j = 0; j < 9; j++) { 
+if (board[i][j] != 0 && row[board[i][j]] == 1) { 
+return 0; // Invalid Sudoku 
+} 
+row[board[i][j]] = 1; 
+} 
+} 
+// Check columns 
+for (int j = 0; j < 9; j++) { 
+int col[10] = {0}; 
+for (int i = 0; i < 9; i++) { 
+if (board[i][j] != 0 && col[board[i][j]] == 1) { 
+return 0; // Invalid Sudoku 
+}
+ col[board[i][j]] = 1; 
+        } 
+    } 
+ 
+    // Check 3x3 subgrids 
+    for (int block = 0; block < 9; block++) { 
+        int subgrid[10] = {0}; 
+        for (int i = block / 3 * 3; i < block / 3 * 3 + 3; i++) { 
+            for (int j = block % 3 * 3; j < block % 3 * 3 + 3; j++) { 
+                if (board[i][j] != 0 && subgrid[board[i][j]] == 1) { 
+                    return 0; // Invalid Sudoku 
+                } 
+                subgrid[board[i][j]] = 1; 
+            } 
+        } 
+    } 
+ 
+    return 1; // Valid Sudoku 
+} 
+ 
+int main() { 
+    int sudoku[9][9] = { 
+        {5, 3, 0, 0, 7, 0, 0, 0, 0}, 
+        {6, 0, 0, 1, 9, 5, 0, 0, 0}, 
+        {0, 9, 8, 0, 0, 0, 0, 6, 0}, 
+        {8, 0, 0, 0, 6, 0, 0, 0, 3}, 
+        {4, 0, 0, 8, 0, 3, 0, 0, 1}, 
+        {7, 0, 0, 0, 2, 0, 0, 0, 6}, 
+        {0, 6, 0, 0, 0, 0, 2, 8, 0}, 
+        {0, 0, 0, 4, 1, 9, 0, 0, 5}, 
+        {0, 0, 0, 0, 8, 0, 0, 7, 9} 
+    }; 
+ 
+    if (isValidSudoku(sudoku)) { 
+        printf("Valid Sudoku\n"); 
+    } else { 
+        printf("Invalid Sudoku\n"); 
+    } 
+ 
+    return 0; 
+}
+       #include <stdio.h> 
+#include <stdlib.h> 
+// Define the structure for a node in the linked list 
+struct ListNode { 
+int val; 
+struct ListNode* next; 
+}; 
+// Function to swap every two adjacent nodes in the linked list 
+struct ListNode* swapPairs(struct ListNode* head) { 
+// Check if the list is empty or has only one node 
+if (head == NULL || head->next == NULL) { 
+return head; 
+} 
+// Initialize pointers for swapping 
+struct ListNode* prev = NULL; 
+struct ListNode* current = head; 
+struct ListNode* nextNode = head->next; 
+// Update the head to the second node 
+head = nextNode; 
+// Perform swaps in pairs 
+while (current != NULL && nextNode != NULL) { 
+// Adjust pointers for swapping 
+current->next = nextNode->next; 
+nextNode->next = current; 
+if (prev != NULL) { 
+// Connect the previous pair to the current pair 
+prev->next = nextNode; 
+} 
+// Move to the next pair 
+prev = current; 
+current = current->next; 
+if (current != NULL) { 
+nextNode = current->next; 
+} 
+} 
+return head; 
+} 
+// Function to print the linked list 
+void printList(struct ListNode* head) { 
+struct ListNode* current = head; 
+while (current != NULL) { 
+printf("%d -> ", current->val); 
+current = current->next; 
+} 
+printf("NULL\n"); 
+} 
+// Function to create a new node with a given value 
+struct ListNode* newNode(int value) { 
+struct ListNode* node = (struct ListNode*)malloc(sizeof(struct ListNode)); 
+if (node != NULL) { 
+node->val = value; 
+node->next = NULL; 
+} 
+return node; 
+} 
+int main() { 
+// Create a sample linked list: 1 -> 2 -> 3 -> 4 -> 5 
+struct ListNode* head = newNode(1); 
+head->next = newNode(2); 
+head->next->next = newNode(3); 
+head->next->next->next = newNode(4); 
+head->next->next->next->next = newNode(5); 
+printf("Original Linked List: "); 
+printList(head);
+  // Swap adjacent nodes 
+head = swapPairs(head); 
+printf("Modified Linked List: "); 
+printList(head); 
+// Clean up memory 
+while (head != NULL) { 
+struct ListNode* temp = head; 
+head = head->next; 
+free(temp); 
+} 
+return 0; 
+}
+       #include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h> 
+// Define the structure for a song node 
+struct Song { 
+char title[100]; 
+char artist[100]; 
+struct Song* next; 
+}; 
+// Function to create a new song node 
+struct Song* createSong(const char* title, const char* artist) { 
+struct Song* newSong = (struct Song*)malloc(sizeof(struct Song)); 
+if (newSong == NULL) { 
+printf("Memory allocation failed.\n"); 
+return NULL; 
+} 
+strncpy(newSong->title, title, sizeof(newSong->title)); 
+strncpy(newSong->artist, artist, sizeof(newSong->artist)); 
+newSong->next = NULL; 
+return newSong; 
+}
+// Function to add a song to the end of the playlist 
+struct Song* addSong(struct Song* playlist, const char* title, const char* artist) { 
+struct Song* newSong = createSong(title, artist); 
+if (newSong == NULL) { 
+return playlist; 
+} 
+if (playlist == NULL) { 
+playlist = newSong; 
+playlist->next = playlist; // Circular link to itself 
+} else { 
+struct Song* current = playlist; 
+while (current->next != playlist) { 
+current = current->next; 
+} 
+current->next = newSong; 
+newSong->next = playlist; 
+} 
+return playlist; 
+} 
+// Function to skip to the next song 
+struct Song* skipToNext(struct Song* playlist) { 
+if (playlist == NULL) { 
+printf("Playlist is empty.\n"); 
+return playlist; 
+} 
+playlist = playlist->next; // Move to the next song 
+return playlist; 
+} 
+// Function to remove the currently playing song 
+struct Song* removeCurrentSong(struct Song* playlist) { 
+if (playlist == NULL) { 
+printf("Playlist is empty.\n"); 
+return playlist; 
+} 
+if (playlist->next == playlist) { 
+// Only one song in the playlist 
+free(playlist); 
+return NULL; 
+} 
+struct Song* current = playlist; 
+while (current->next != playlist) { 
+current = current->next; 
+} 
+struct Song* temp = playlist; 
+current->next = playlist->next; // Remove the current song from the circular list 
+playlist = playlist->next; // Move to the next song 
+free(temp); 
+return playlist; 
+} 
+// Function to display the currently playing song 
+void displayCurrentSong(struct Song* playlist) { 
+if (playlist == NULL) { 
+printf("Playlist is empty.\n"); 
+} else { 
+printf("Currently Playing: %s by %s\n", playlist->title, playlist->artist); 
+} 
+} 
+// Function to display the entire playlist 
+void displayPlaylist(struct Song* playlist) { 
+if (playlist == NULL) { 
+printf("Playlist is empty.\n"); 
+return; 
+} 
+struct Song* current = playlist; 
+do { 
+printf("%s by %s\n", current->title, current->artist); 
+current = current->next; 
+} while (current != playlist); 
+} 
+int main() { 
+struct Song* playlist = NULL; 
+int choice; 
+char title[100], artist[100]; 
+while (1) { 
+printf("\nMenu:\n"); 
+printf("1. Add a Song\n"); 
+printf("2. Skip to Next Song\n"); 
+printf("3. Remove Currently Playing Song\n"); 
+printf("4. Display Currently Playing Song\n"); 
+printf("5. Display Playlist\n"); 
+printf("6. Exit\n"); 
+printf("Enter your choice: "); 
+scanf("%d", &choice);
+switch (choice) { 
+case 1: 
+printf("Enter the title of the song: "); 
+scanf(" %[^\n]s", title); 
+printf("Enter the artist of the song: "); 
+scanf(" %[^\n]s", artist); 
+playlist = addSong(playlist, title, artist); 
+break; 
+case 2: 
+playlist = skipToNext(playlist); 
+break; 
+case 3: 
+playlist = removeCurrentSong(playlist); 
+break; 
+case 4: 
+displayCurrentSong(playlist); 
+break; 
+case 5: 
+displayPlaylist(playlist); 
+break; 
+case 6: 
+// Clean up and exit 
+while (playlist != NULL) { 
+playlist = removeCurrentSong(playlist); 
+} 
+return 0; 
+default: 
+printf("Invalid choice. Please try again.\n"); 
+} 
+} 
+return 0; 
+}
+       #include <stdio.h> 
+#include <stdlib.h> 
+// Structure to represent a customer 
+struct Customer  
+{ 
+char name[50]; 
+int age; 
+int numTickets; 
+struct Customer* next; 
+}; 
+// Structure to represent the queue 
+struct Queue  
+{ 
+}; 
+struct Customer* front; 
+struct Customer* rear; 
+// Initialize a queue 
+struct Queue* createQueue()  
+{ 
+struct Queue* queue = (struct Queue*)malloc(sizeof(struct Queue)); 
+queue->front = queue->rear = NULL; 
+return queue; 
+} 
+// Check if the queue is empty 
+int isEmpty(struct Queue* queue)  
+{ 
+return (queue->front == NULL); 
+} 
+// Add a customer to the rear of the queue 
+void enqueue(struct Queue* queue, struct Customer customer)  
+{ 
+struct Customer* newNode = (struct Customer*)malloc(sizeof(struct Customer)); 
+*newNode = customer; 
+ newNode->next = NULL; 
+ 
+    if (isEmpty(queue)) { 
+        queue->front = queue->rear = newNode; 
+    } else { 
+        queue->rear->next = newNode; 
+        queue->rear = newNode; 
+    } 
+} 
+ 
+// Remove and return a customer from the front of the queue 
+struct Customer dequeue(struct Queue* queue)  
+{ 
+    struct Customer emptyCustomer = {"", 0, 0, NULL}; 
+ 
+    if (isEmpty(queue))  
+    { 
+        return emptyCustomer; // Queue is empty 
+    } 
+ 
+    struct Customer* temp = queue->front; 
+    struct Customer customer = *temp; 
+    queue->front = queue->front->next; 
+ 
+    free(temp); 
+    return customer; 
+} 
+ 
+ 
+int main()  
+{ 
+    // Total number of tickets available 
+    int totalTickets = 100;  
+    struct Queue* ticketQueue = createQueue(); 
+ 
+    while (totalTickets > 0)  
+    { 
+        struct Customer customer; 
+        printf("Enter customer name: "); 
+        scanf("%s", customer.name); 
+        printf("Enter customer age: "); 
+        scanf("%d", &customer.age); 
+        printf("Enter number of tickets needed: "); 
+        scanf("%d", &customer.numTickets); 
+ 
+        if (customer.numTickets <= totalTickets)  
+        { 
+            totalTickets -= customer.numTickets; 
+            enqueue(ticketQueue, customer); 
+            printf("Tickets sold to %s (%d tickets remaining)\n", customer.name, totalTickets);
+    }  
+        else  
+        { 
+            printf("Insufficient tickets available. Tickets not sold to %s\n", customer.name); 
+        } 
+ 
+        printf("Do you want to add another customer? (1 for yes, 0 for no): "); 
+        int choice; 
+        scanf("%d", &choice); 
+        if (choice != 1)  
+        { 
+            break; 
+        } 
+    } 
+ 
+    printf("Houseful! All tickets are sold.\n"); 
+ 
+    return 0; 
+}
+       #include <stdio.h> 
+// Define the structure for a student 
+struct Student  
+{ 
+}; 
+int studentID; 
+char name[50]; 
+char grade; 
+float marks[5]; 
+float averageMarks; 
+// Function to calculate the average marks for a student 
+void calculateAverage(struct Student *student)  
+{ 
+float totalMarks = 0.0; 
+for (int i = 0; i < 5; i++)  
+{ 
+totalMarks += student->marks[i]; 
+} 
+student->averageMarks = totalMarks / 5; 
+} 
+// Function to assign grades based on average marks 
+void assignGrades(struct Student *student)  
+{ 
+if (student->averageMarks >= 90)  
+{ 
+    student->grade = 'A'; 
+    }  
+    else if (student->averageMarks >= 80)  
+    { 
+        student->grade = 'B'; 
+    }  
+    else if (student->averageMarks >= 70)  
+    { 
+        student->grade = 'C'; 
+    }  
+    else if (student->averageMarks >= 60)  
+    { 
+        student->grade = 'D'; 
+    }  
+    else  
+    { 
+        student->grade = 'F'; 
+    } 
+} 
+ 
+int main()  
+{ 
+    struct Student students[5]; 
+ 
+    // Input student information 
+    for (int i = 0; i < 5; i++)  
+    { 
+        printf("Enter Student ID: "); 
+        scanf("%d", &students[i].studentID); 
+        printf("Enter Name: "); 
+        scanf("%s", students[i].name); 
+ 
+        printf("Enter marks for 5 subjects:\n"); 
+        for (int j = 0; j < 5; j++) { 
+            printf("Subject %d: ", j + 1); 
+            scanf("%f", &students[i].marks[j]); 
+        } 
+ 
+        // Calculate average marks and assign grades 
+        calculateAverage(&students[i]); 
+        assignGrades(&students[i]); 
+    } 
+ 
+    // Display student information 
+    printf("\nStudent Information:\n"); 
+    for (int i = 0; i < 5; i++)  
+    { 
+        printf("Student ID: %d\n", students[i].studentID); 
+printf("Name: %s\n", students[i].name); 
+printf("Average Marks: %.2f\n", students[i].averageMarks); 
+printf("Grade: %c\n", students[i].grade); 
+printf("\n"); 
+} 
+return 0; 
+}
+        #include <stdio.h> 
+#include <stdlib.h> 
+// Define a structure for a node in the linked list 
+struct Node { 
+int data; 
+struct Node* next; 
+}; 
+// Define a structure for the stack 
+struct Stack { 
+struct Node* top; 
+}; 
+// Function to create an empty stack 
+struct Stack* createStack() { 
+struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack)); 
+stack->top = NULL; 
+return stack; 
+} 
+// Function to check if the stack is empty 
+int isEmpty(struct Stack* stack) { 
+return (stack->top == NULL); 
+} 
+// Function to push an element onto the stack 
+void push(struct Stack* stack, int data) { 
+struct Node* newNode = (struct Node*)malloc(sizeof(struct Node)); 
+newNode->data = data; 
+newNode->next = stack->top; 
+stack->top = newNode; 
+printf("%d pushed to the stack\n", data); 
+} 
+// Function to pop an element from the stack 
+int pop(struct Stack* stack) { 
+if (isEmpty(stack)) { 
+printf("Stack is empty. Cannot pop.\n"); 
+  return -1; // Return an invalid value 
+} 
+struct Node* temp = stack->top; 
+int poppedData = temp->data; 
+stack->top = temp->next; 
+free(temp); 
+return poppedData; 
+} 
+int main() { 
+struct Stack* stack = createStack(); 
+push(stack, 10); 
+push(stack, 20); 
+push(stack, 30); 
+printf("%d popped from the stack\n", pop(stack)); 
+printf("%d popped from the stack\n", pop(stack)); 
+printf("%d popped from the stack\n", pop(stack)); 
+printf("%d popped from the stack\n", pop(stack)); // Trying to pop from an empty stack 
+return 0; 
+}
+       #include <stdio.h> 
+// Define the structure for a student 
+struct Student  
+{ 
+}; 
+int studentID; 
+char name[50]; 
+char grade; 
+float marks[5]; 
+float averageMarks; 
+// Function to calculate the average marks for a student 
+void calculateAverage(struct Student *student)  
+{ 
+float totalMarks = 0.0; 
+for (int i = 0; i < 5; i++)  
+{ 
+totalMarks += student->marks[i]; 
+} 
+student->averageMarks = totalMarks / 5; 
+} 
+// Function to assign grades based on average marks 
+void assignGrades(struct Student *student)  
+{ 
+if (student->averageMarks >= 90) 
+  { 
+        student->grade = 'A'; 
+    }  
+    else if (student->averageMarks >= 80)  
+    { 
+        student->grade = 'B'; 
+    }  
+    else if (student->averageMarks >= 70)  
+    { 
+        student->grade = 'C'; 
+    }  
+    else if (student->averageMarks >= 60)  
+    { 
+        student->grade = 'D'; 
+    }  
+    else  
+    { 
+        student->grade = 'F'; 
+    } 
+} 
+ 
+int main()  
+{ 
+    struct Student students[5]; 
+    struct Student *studentPtr = students; 
+ 
+    // Input student information 
+    for (int i = 0; i < 5; i++)  
+    { 
+        printf("Enter Student ID: "); 
+        scanf("%d", &studentPtr->studentID); 
+        printf("Enter Name: "); 
+        scanf("%s", studentPtr->name); 
+ 
+        printf("Enter marks for 5 subjects:\n"); 
+        for (int j = 0; j < 5; j++)  
+        { 
+            printf("Subject %d: ", j + 1); 
+            scanf("%f", &studentPtr->marks[j]); 
+        } 
+ 
+        // Calculate average marks and assign grades 
+        calculateAverage(studentPtr); 
+        assignGrades(studentPtr); 
+ 
+        // Move to the next student in the array 
+        studentPtr++; 
+    }
+studentPtr = students; 
+// Display student information 
+printf("\nStudent Information:\n"); 
+for (int i = 0; i < 5; i++)  
+{ 
+printf("Student ID: %d\n", studentPtr->studentID); 
+printf("Name: %s\n", studentPtr->name); 
+printf("Average Marks: %.2f\n", studentPtr->averageMarks); 
+printf("Grade: %c\n", studentPtr->grade); 
+printf("\n"); 
+// Move to the next student in the array 
+studentPtr++; 
+} 
+return 0; 
+}
